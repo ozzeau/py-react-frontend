@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import CreateForm from './CreateForm';
 import RestaurantItem from './RestaurantItem';
+import Header from '../layout/Header';
+import Footer from '../layout/Footer';
 
 function Edit() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -62,42 +64,48 @@ function Edit() {
       });
   };
 
-  if (!hasRestaurant) {
-    return <CreateForm onCreated={fetchRestaurants} />;
-  }
-
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold">Welcome {user?.username}!</h1>
-      <p>Your role: {user?.role}</p>
-      <p>Your current token: {token}</p>
+    <div className="flex flex-col h-full">
+      <Header />
 
-      <div className="mt-4">
-        <h2 className="text-xl font-semibold">Has restaurant registered?</h2>
-        <p className="text-lg font-mono">{hasRestaurant ? "true" : "false"}</p>
-      </div>
+      <main className="flex flex-col w-full mx-auto p-6">
+        {!hasRestaurant ? (
+          <CreateForm onCreated={fetchRestaurants} />
+        ) : (
+          <>
+            <h1 className="text-3xl font-bold">Welcome {user?.username}!</h1>
+            <p>Your role: {user?.role}</p>
+            <p>Your current token: {token}</p>
 
-      <div className="mt-4">
-        <h2 className="text-xl font-semibold">Restaurants:</h2>
-        <ul className="bg-gray-100 p-4 mt-2 rounded list-disc list-inside">
-          {restaurants
-            .filter(rest => rest.user === user?.id)
-            .map(rest => (
-              <RestaurantItem
-                key={rest.id}
-                restaurant={rest}
-                editingId={editingId}
-                editData={editData}
-                onEditClick={handleEditClick}
-                onSave={handleSave}
-                setEditData={setEditData}
-                token={token}
-                userId={user?.id}
-              />
+            <div className="mt-4">
+              <h2 className="text-xl font-semibold">Has restaurant registered?</h2>
+              <p className="text-lg font-mono">{hasRestaurant ? "true" : "false"}</p>
+            </div>
 
-            ))}
-        </ul>
-      </div>
+            <div className="mt-4">
+              <h2 className="text-xl font-semibold">Restaurants:</h2>
+              <ul className="bg-gray-100 p-4 mt-2 rounded list-disc list-inside">
+                {restaurants
+                  .filter(rest => rest.user === user?.id)
+                  .map(rest => (
+                    <RestaurantItem
+                      key={rest.id}
+                      restaurant={rest}
+                      editingId={editingId}
+                      editData={editData}
+                      onEditClick={handleEditClick}
+                      onSave={handleSave}
+                      setEditData={setEditData}
+                      token={token}
+                      userId={user?.id}
+                    />
+                  ))}
+              </ul>
+            </div>
+          </>
+        )}
+      </main>
+
     </div>
   );
 }
